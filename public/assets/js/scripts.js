@@ -1,0 +1,26 @@
+/*!
+    * Dual Gate - Dual Gate v7.0.7 (https://startbootstrap.com/template/sb-admin)
+    * Copyright 2013-2023 Dual Gate
+    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
+    */
+
+
+
+
+window.addEventListener('DOMContentLoaded', event => {
+
+
+    const sidebarToggle = document.body.querySelector('#sidebarToggle');
+    if (sidebarToggle) {
+
+
+
+
+        sidebarToggle.addEventListener('click', event => {
+            event.preventDefault();
+            document.body.classList.toggle('sb-sidenav-toggled');
+            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+        });
+    }
+
+});
