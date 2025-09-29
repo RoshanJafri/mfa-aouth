@@ -73,12 +73,12 @@ to simulate an SMTP server. The OTP code is session based and expires in
 
 The user can access the web application through the login page.
 
-![App Screenshot](public/assets/media/img/login.jpg)
+![App Screenshot](public/assets/media/img/login.png)
 
 The registration page allows new users to create an account, providing
 the necessary information to securely join the application
 
-![App Screenshot](public/assets/media/img/register.jpg)
+![App Screenshot](public/assets/media/img/register.png)
 
 The dashboard or homepage serves as the central hub for authenticated
 users, providing a personalized overview of their account, recent activities,
@@ -91,13 +91,13 @@ The OTP verification process adds an essential layer of security,
 requiring users to enter a unique, time-sensitive code after initial login
 to confirm their identity and prevent unauthorized access.
 
-![App Screenshot](public/assets/media/img/otp.jpg)
+![App Screenshot](public/assets/media/img/otp.png)
 
 The device check feature verifies the authenticity of the login device,
 allowing users to trust familiar devices for smoother access while flagging
 unrecognized ones for enhanced security.
 
-![App Screenshot](public/assets/media/img/fingerprint.jpg)
+![App Screenshot](public/assets/media/img/fingerprint.png)
 ## CONCLUSION
 
 In conclusion, this project demonstrates a strong commitment to security by
