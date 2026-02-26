@@ -1,0 +1,5 @@
+log device used to sign in anyway
+add the trusted label depending if user agrees or skips.
+comments
+add success badges
+fix blade, UI
