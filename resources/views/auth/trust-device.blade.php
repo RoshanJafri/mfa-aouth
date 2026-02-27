@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     skipBtn.addEventListener('click', function () {
         trustedInput.value = 0;
-        form.submit();
+        form.requestSubmit();
     });
 
 });

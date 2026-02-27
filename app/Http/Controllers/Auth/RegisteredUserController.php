@@ -75,8 +75,7 @@ class RegisteredUserController extends Controller
 
         app(OtpService::class)->generate($user);
 
-        return redirect()->route('otp.verify')
-            ->with('warning', 'Please verify your email to activate your account.');
+        return redirect()->route('otp.verify');
     }
 
     public function trustDevice()
