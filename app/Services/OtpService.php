@@ -9,16 +9,38 @@ use Illuminate\Support\Facades\Mail;
 
 class OtpService
 {
+    // public function generate(User $user): void
+    // {
+    //     $otp = random_int(100000, 999999);
+
+    //     Otp::where('user_id', $user->id)->delete();
+
+    //     Otp::create([
+    //         'user_id' => $user->id,
+    //         'otp_hash' => Hash::make($otp),
+    //         'expires_at' => Carbon::now()->addMinutes(10),
+    //     ]);
+
+    //     Mail::raw("Your OTP is: {$otp}. It expires in 10 minutes.", function ($message) use ($user) {
+    //         $message->to($user->email)
+    //             ->subject('Your Verification Code');
+    //     });
+    // }
     public function generate(User $user): void
     {
         $otp = random_int(100000, 999999);
 
-        Otp::where('user_id', $user->id)->delete();
+        Otp::where('user_id', $user->id)
+            ->whereNull('used_at')
+            ->update([
+                'used_at' => now(),
+            ]);
 
         Otp::create([
             'user_id' => $user->id,
             'otp_hash' => Hash::make($otp),
-            'expires_at' => Carbon::now()->addMinutes(10),
+            'expires_at' => now()->addMinutes(10),
+            'attempts' => 0,
         ]);
 
         Mail::raw("Your OTP is: {$otp}. It expires in 10 minutes.", function ($message) use ($user) {
@@ -29,8 +51,11 @@ class OtpService
 
     public function verify(User $user, string $inputOtp): bool
     {
-
-        $record = Otp::where('user_id', $user->id)->first();
+        $record = Otp::where('user_id', $user->id)
+            ->whereNull('used_at')
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
 
         if (!$record) {
             return false;

@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use App\Models\LoginLog;
+use App\Models\Otp;
 use App\Services\OtpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OtpController extends Controller
 {
+    public function index(){
+        $otps = Otp::orderBy("created_at","desc")->paginate(20);   
+        return view("otp.index" ,compact("otps"));
+    }
+
     public function show()
     {
         return view('otp.verify');

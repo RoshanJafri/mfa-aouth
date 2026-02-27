@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\LoginLogController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,7 +13,14 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+
+    $devices = auth()->user()
+        ->devices()
+        ->latest()
+        ->get();
+
+    return view('dashboard', compact('devices'));
+
 })->middleware(['auth', 'otp.verified'])->name('dashboard');
 
 
@@ -32,10 +41,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
+    Route::get('/login-logs', [LoginLogController::class, 'index'])
+        ->name('login.logs');
+    Route::get('/devices', [DeviceController::class, 'index'])
+        ->name('devices.index');
+    Route::get('/otps', [OtpController::class, 'index'])
+        ->name('otps.index');
+    Route::resource('/users', UserController::class);
+
 
     // DEVICE ROUTES
     Route::get('/trust-device', [RegisteredUserController::class, 'trustDevice'])->name('trust.device');
     Route::post('/devices/register', [DeviceController::class, 'register']);
+
+
+    Route::patch('/devices/{device}/trust', [DeviceController::class, 'trust'])
+        ->name('devices.trust');
+
+    Route::patch('/devices/{device}/untrust', [DeviceController::class, 'untrust'])
+        ->name('devices.untrust');
 });
 
 require __DIR__ . '/auth.php';

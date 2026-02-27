@@ -8,6 +8,31 @@ use Illuminate\Support\Facades\Auth;
 
 class DeviceController extends Controller
 {
+
+    public function index()
+    {
+        $devices = Device::paginate(100);
+        return view("devices.index", compact("devices"));
+    }
+
+    public function trust(Device $device)
+    {
+        abort_if($device->user_id !== auth()->id(), 403);
+
+        $device->update(['trusted' => true]);
+
+        return back();
+    }
+
+    public function untrust(Device $device)
+    {
+        abort_if($device->user_id !== auth()->id(), 403);
+
+        $device->update(['trusted' => false]);
+
+        return back();
+    }
+
     public function register(Request $request)
     {
         $request->validate([
@@ -21,7 +46,6 @@ class DeviceController extends Controller
             ['user_id' => Auth::id(), 'device_uuid' => $request->device_uuid],
             [
                 'fingerprint_hash' => $request->fingerprint_hash,
-                'trusted' => true,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'trusted' => $request->trusted,
@@ -29,6 +53,6 @@ class DeviceController extends Controller
             ]
         );
 
-        return response()->json(['message'=>'Device registered', 'device'=>$device]);
+        return redirect()->route('dashboard');
     }
 }

@@ -19,4 +19,8 @@ class Otp extends Model
         'expires_at' => 'datetime',
         'used_at' => 'datetime',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

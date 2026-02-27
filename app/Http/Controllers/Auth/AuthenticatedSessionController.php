@@ -114,7 +114,14 @@ class AuthenticatedSessionController extends Controller
             'status' => 'success',
         ]);
 
-        return redirect()->intended(route('dashboard'));
+
+        if (!$device->trusted) {
+            return redirect()->route('trust.device')
+                ->with('success', 'Account verified successfully.');
+        } else {
+            return redirect()->intended(route('dashboard'));
+        }
+
     }
 
     /**

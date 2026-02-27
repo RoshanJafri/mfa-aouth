@@ -1,95 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-guest-layout>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Dual Gate - Device Trust</title>
-</head>
+    <div class="text-center mb-6">
+        <h1 class="text-2xl font-semibold text-gray-900">
+            {{ __('Trust This Device?') }}
+        </h1>
 
-<body>
-
-    <div class="container mx-auto p-4">
-        <h1 class="text-xl font-bold mb-4">Trust This Device?</h1>
-        <p class="mb-4">
+        <p class="mt-2 text-sm text-gray-600">
             Trusted devices skip OTP on future logins.
-            You can skip, but your device will still be recorded.
+            You can skip this step, but the device will still be recorded.
         </p>
-
-        <form id="trust-device-form">
-            <input type="hidden" name="trusted" id="trusted" value="1">
-
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">
-                Yes, trust this device
-            </button>
-
-            <button type="button" id="skip-button" class="ml-4 px-4 py-2 bg-gray-500 text-white rounded">
-                Skip
-            </button>
-        </form>
     </div>
 
-    <!-- Load module -->
-    <script src="{{ asset('assets/js/device-security.js') }}"></script>
+    <form method="POST" action="{{ url('/devices/register') }}">
+        @csrf
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        <!-- Hidden device fields -->
+        <input type="hidden" name="device_uuid">
+        <input type="hidden" name="fingerprint_hash">
+        <input type="hidden" name="latitude">
+        <input type="hidden" name="longitude">
+        <input type="hidden" name="trusted" id="trusted" value="1">
 
-            const form = document.getElementById('trust-device-form');
-            const skipBtn = document.getElementById('skip-button');
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            const deviceRegisterUrl = "{{ url('/devices/register') }}";
+        <div class="flex items-center justify-between mt-6">
 
-            async function submitDevice(trustValue) {
+            <!-- Skip -->
+            <button type="button"
+                id="skip-button"
+                class="underline text-sm text-gray-600 hover:text-gray-900">
+                {{ __('Skip for now') }}
+            </button>
 
-                // Collect fingerprint + uuid + geo from module
-                const securityData = await DeviceSecurity.collect();
+            <!-- Trust -->
+            <x-primary-button>
+                {{ __('Yes, Trust This Device') }}
+            </x-primary-button>
 
-                const payload = {
-                    ...securityData,
-                    trusted: trustValue
-                };
+        </div>
+    </form>
 
-                try {
-                    const response = await fetch(deviceRegisterUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify(payload)
-                    });
+<script src="{{ asset('assets/js/device-security.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
-                    if (response.ok) {
-                        window.location.href = "{{ route('dashboard') }}";
-                    } else {
-                        const errorText = await response.text();
-                        console.error('Device registration failed:', errorText);
-                        alert('Error saving device.');
-                    }
+    const form = document.querySelector('form');
+    const skipBtn = document.getElementById('skip-button');
+    const trustedInput = document.getElementById('trusted');
 
-                } catch (err) {
-                    console.error('Fetch error:', err);
-                    alert('Connection error.');
-                }
-            }
+    if (form) {
+        DeviceSecurity.attachToForm(form);
+    }
 
-            // Yes (trusted = 1)
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                submitDevice(1);
-            });
+    skipBtn.addEventListener('click', function () {
+        trustedInput.value = 0;
+        form.submit();
+    });
 
-            // Skip (trusted = 0)
-            skipBtn.addEventListener('click', function () {
-                submitDevice(0);
-            });
-
-        });
-    </script>
-
-</body>
-
-</html>
+});
+</script>
+</x-guest-layout>
