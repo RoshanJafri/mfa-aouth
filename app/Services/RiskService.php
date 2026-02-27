@@ -45,10 +45,9 @@ class RiskService
         }
 
         if (!$trustedDeviceMatch) {
-            $this->score += 40; // new/untrusted device risk
+            $this->score += 40; //
         }
 
-        // Fingerprint mismatch → +30
         if (!$trustedDeviceMatch && $fingerprint) {
             $fingerprintMismatch = true;
             foreach ($userDevices as $device) {
@@ -62,7 +61,7 @@ class RiskService
             }
         }
 
-        // GPS distance → +20 if > 100km
+        
         if ($lastLogin) {
             $distance = $this->geo->distanceKm(
                 $params['latitude'],
@@ -75,7 +74,7 @@ class RiskService
                 $this->score += 20;
             }
 
-            // Impossible travel → +70 if speed > 900 km/h
+            // Impossible travel
             $speed = $this->geo->calculateSpeedKmH(
                 $distance,
                 $lastLogin->created_at,

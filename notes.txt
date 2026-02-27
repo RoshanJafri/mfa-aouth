@@ -1,2 +1,2 @@
-comments
-otp attempt counting mechanism
+main page ui
+registration geolocation

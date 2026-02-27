@@ -37,7 +37,9 @@
                                         </td>
 
                                         <td class="px-4 py-2 border">
-                                            {{ $otp->used_at->format('d M Y| h:i a') }}
+                                           @if ($otp->used_at)
+                                                {{ $otp->used_at->format('d M Y| h:i a') }}
+                                           @endif
                                         </td>
 
                                         <td class="px-4 py-2 border">
